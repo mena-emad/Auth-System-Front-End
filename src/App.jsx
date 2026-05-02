@@ -10,7 +10,6 @@ import ProfilePage from './pages/ProfilePage'
 
 function App() {
 
-
   return (
     <>
       <Routes>
@@ -19,7 +18,6 @@ function App() {
         <Route path="*" element={<Navigate to="/login" />} />
         <Route path="/verify-email" element={<OtpPage/>} />
         <Route element={<ProtectedRoutes/>} >
-          <Route path="/" element={<ProfilePage/>} />
           <Route path="/home" element={<ProfilePage/>} />
         </Route>
       </Routes>
