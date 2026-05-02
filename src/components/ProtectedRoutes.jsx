@@ -53,5 +53,5 @@ export default function ProtectedRoutes() {
             </Box>
         );
     }
-    return isAuth ?  <Outlet /> && <Navigate to="/home" /> : <Navigate to="/login" />
+    return isAuth ?  <Outlet /> : <Navigate to="/login" />
 }

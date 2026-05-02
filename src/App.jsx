@@ -6,13 +6,16 @@ import { Navigate } from 'react-router-dom'
 import OtpPage from './pages/OtpPage'
 import ProtectedRoutes from './components/ProtectedRoutes'
 import ProfilePage from './pages/ProfilePage'
+import useAuth from './hooks/useAuth'
 
 
 function App() {
+  const {isAuth} = useAuth();
 
   return (
     <>
       <Routes>
+        <Route path="/" element={isAuth? <Navigate to="/home" /> : <Navigate to="/login" />} />
         <Route path="/signup"  element={<SignupPage/>} />
         <Route path="/login" element={<LoginPage/>} />
         <Route path="*" element={<Navigate to="/login" />} />
