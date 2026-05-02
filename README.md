@@ -1,6 +1,13 @@
-# 🛠️ Profile Management Dashboard (MERN Stack)
+# 🔐 Full Stack Authentication System (Front-End)
 
-This project features an advanced, high-performance Profile Page designed for a modern user experience. It integrates seamless responsiveness with custom brand aesthetics inspired by the "Cukur" identity, specifically tailored for full-stack developers.
+A robust and secure Full-Stack Authentication System built with the MERN stack. This project focuses on a complete user identity lifecycle, featuring secure token monitoring and a seamless user experience from registration to data visualization.
+
+## 🚀 Key Functionalities
+*   **User Registration & Account Creation**: Seamless sign-up flow with real-time input validation.
+*   **Email Verification (OTP)**: Integrated One-Time Password system via email to ensure account authenticity.
+*   **Token Monitoring (Cookies)**: Advanced security logic that monitors authentication tokens stored in **Cookies**, ensuring persistent and secure user sessions.
+*   **Data Visualization**: After a successful login, user information is retrieved and displayed in a **clean, professionally formatted dashboard**.
+*   **Secure Session Management**: Complete Login/Logout flow with automated token handling.
 
 ## 🚀 Technology Stack
 *   **Frontend**: React.js & Vite
