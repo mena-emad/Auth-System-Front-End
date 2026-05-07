@@ -1,16 +1,36 @@
 import { Box, Container, Typography, Avatar, Grid, Paper, Button, Skeleton } from "@mui/material";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Mail, User, ShieldCheck, LogOut, Award } from "lucide-react"; 
 import useAuth from "../hooks/useAuth";
 import useTitle from "../hooks/useTitle";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import CukurLogoProfile from "../components/CukurLogoProfile";
+import BlueFireOverlay from "../components/BlueFireOverlay"; // استيراد الكومبوننت الجديد
+import { useMediaQuery, useTheme } from "@mui/system";
 
 export default function ProfilePage() {
     const title = useTitle();
-    useEffect(() => { title("Profile") }, [title]);
+    const location = useLocation();
+    const [showFire, setShowFire] = useState(false);
     const { user, logout } = useAuth();
     const isLoading = !user;
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+    useEffect(() => { 
+        title("Profile");
+        // التأكد إذا كان المستخدم جاي من صفحة الـ Auth (سواء تسجيل أو OTP)
+        if (location.state?.fromAuth) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setShowFire(true);
+            const timer = setTimeout(() => {
+                setShowFire(false);
+                window.history.replaceState({}, document.title);
+            }, 5000); // مدة عرض التأثير
+            return () => clearTimeout(timer);
+        }
+    }, [title, location.state]);
 
     const containerVariants = {
         hidden: { opacity: 0, y: 20 },
@@ -24,13 +44,18 @@ export default function ProfilePage() {
             sx={{
                 minHeight: "100vh",
                 background: "radial-gradient(circle at top right, #1e293b 0%, #020617 100%)",
-                py: { xs: 4, md: 8 }, // تقليل الحشو الرأسي في الموبايل
+                py: { xs: 4, md: 8 },
                 color: "#fff",
                 position: "relative",
-                overflowX: "hidden" // منع السكرول العرضي تماماً
+                overflowX: "hidden"
             }}
         >
-            {/* شعار الحفرة - ضبط مكانه وحجمه للموبايل */}
+            {/* استدعاء تأثير النار الزرقاء */}
+            <AnimatePresence>
+                {showFire && <BlueFireOverlay key="fire-effect" />}
+            </AnimatePresence>
+
+            {/* شعار الحفرة */}
             <Box sx={{ 
                 position: "absolute", 
                 top: { xs: 10, md: 20 }, 
@@ -38,7 +63,9 @@ export default function ProfilePage() {
                 opacity: 0.6,
                 zIndex: 1
             }}>
-                <CukurLogoProfile size={window.innerWidth < 600 ? 40 : 60} />
+                {/* <CukurLogoProfile size={window.innerWidth < 600 ? 40 : 60} />
+                 */}
+                 <CukurLogoProfile size={isMobile ? 40 : 60} />
             </Box>
 
             <Container maxWidth="md">
@@ -47,7 +74,7 @@ export default function ProfilePage() {
                     <Paper
                         elevation={0}
                         sx={{
-                            p: { xs: 3, md: 5 }, // Padding متغير حسب الشاشة
+                            p: { xs: 3, md: 5 },
                             borderRadius: { xs: "24px", md: "32px" },
                             bgcolor: "rgba(255, 255, 255, 0.02)",
                             backdropFilter: "blur(20px)",
@@ -85,7 +112,7 @@ export default function ProfilePage() {
                             sx={{ 
                                 fontWeight: "900", 
                                 mb: 0.5, 
-                                fontSize: { xs: "1.8rem", md: "3rem" }, // تصغير الخط للموبايل
+                                fontSize: { xs: "1.8rem", md: "3rem" },
                                 background: "linear-gradient(to right, #fff, #94a3b8)", 
                                 WebkitBackgroundClip: "text", 
                                 WebkitTextFillColor: "transparent",
@@ -117,7 +144,7 @@ export default function ProfilePage() {
                         <Button
                             onClick={logout}
                             startIcon={<LogOut size={20} />}
-                            fullWidth={window.innerWidth < 600} // الزرار ياخد العرض كامل في الموبايل لسهولة الضغط
+                            fullWidth={window.innerWidth < 600}
                             sx={{
                                 color: "#f87171",
                                 fontWeight: "800",
@@ -139,6 +166,7 @@ export default function ProfilePage() {
     );
 }
 
+// مكون كارت المعلومات (مفصول للتنظيم داخل الملف)
 function InfoCard({ icon, label, value }) {
     return (
         <Paper
@@ -150,34 +178,19 @@ function InfoCard({ icon, label, value }) {
                 display: "flex",
                 alignItems: "center",
                 gap: { xs: 1.5, md: 2.5 },
-                overflow: "hidden", // حماية إضافية للحاوية
+                overflow: "hidden",
                 transition: "0.3s",
                 "&:hover": { transform: "translateY(-5px)", borderColor: "rgba(59, 130, 246, 0.3)" }
             }}
         >
-            <Box sx={{ 
-                p: 1.2, 
-                borderRadius: "12px", 
-                bgcolor: "rgba(59, 130, 246, 0.1)", 
-                color: "#3b82f6", 
-                display: "flex",
-                flexShrink: 0 // منع الأيقونة من الانكماش لو النص طويل
-            }}>
+            <Box sx={{ p: 1.2, borderRadius: "12px", bgcolor: "rgba(59, 130, 246, 0.1)", color: "#3b82f6", display: "flex", flexShrink: 0 }}>
                 {icon}
             </Box>
-            <Box sx={{ minWidth: 0 }}> {/* ضروري لعمل الـ wordBreak داخل الـ Flexbox */}
+            <Box sx={{ minWidth: 0 }}>
                 <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.4)", display: "block", textTransform: "uppercase", letterSpacing: "1px", fontSize: "0.6rem" }}>
                     {label}
                 </Typography>
-                <Typography 
-                    variant="body2" 
-                    sx={{ 
-                        fontWeight: "700", 
-                        color: "#e2e8f0", 
-                        fontSize: { xs: "0.85rem", md: "1rem" },
-                        wordBreak: "break-all" // الحل السحري لخروج النص بره الحاوية
-                    }}
-                >
+                <Typography variant="body2" sx={{ fontWeight: "700", color: "#e2e8f0", fontSize: { xs: "0.85rem", md: "1rem" }, wordBreak: "break-all" }}>
                     {value}
                 </Typography>
             </Box>

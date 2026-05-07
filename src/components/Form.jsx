@@ -64,7 +64,7 @@ export default function Form({ formType, ...rest }) {
         navigate("/verify-email", { state: { email: data.email } });
       } else {
         await login(data);
-        navigate("/home");
+        navigate("/home",{state:{fromAuth:true}} , { replace: true });
       }
     } catch (err) {
       // هنا نمسك رسالة الخطأ من السيرفر (مثل: Email already exists)

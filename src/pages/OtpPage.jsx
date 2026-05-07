@@ -68,7 +68,7 @@ export default function OtpPage() {
 
         try {
             await verifyEmail({ email, otp: otpString });
-            navigate("/home");
+            navigate("/home" , {state:{fromAuth:true}} , { replace: true });
         } catch (err) {
             setError(err.response?.data?.message || "Invalid OTP, please try again.");
         } finally {
